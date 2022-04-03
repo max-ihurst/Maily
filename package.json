@@ -4,5 +4,21 @@
   "main": "./src/index.js",
   "repository": "https://github.com/Coltzy/discord.js-modmail.git",
   "author": "Coltzy <coltzy@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "dev": "npx nodemon ./src/index.ts"
+  },
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "typescript": "^4.6.3"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "dotenv": "^16.0.0",
+    "eslint": "^8.12.0",
+    "nodemon": "^2.0.15",
+    "ts-node": "^10.7.0"
+  }
 }
