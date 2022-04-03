@@ -1,0 +1,8 @@
+{
+  "name": "discord.js-modmail",
+  "version": "1.0.0",
+  "main": "./src/index.js",
+  "repository": "https://github.com/Coltzy/discord.js-modmail.git",
+  "author": "Coltzy <coltzy@hotmail.com>",
+  "license": "MIT"
+}
