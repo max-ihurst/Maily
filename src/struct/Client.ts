@@ -1,5 +1,6 @@
 import { Client, Intents } from 'discord.js';
 import CommandHandler from '../handlers/CommandHandler';
+import * as mongoose from 'mongoose';
 import 'dotenv/config';
 
 declare module 'discord.js' {
@@ -11,8 +12,8 @@ declare module 'discord.js' {
 export default class ModMail extends Client {
     constructor() {
         super({
-            intents: [Intents.FLAGS.GUILDS]
-        })
+            intents: [Intents.FLAGS.GUILDS],
+        });
 
         this.commands = new CommandHandler(this);
 
@@ -33,7 +34,8 @@ export default class ModMail extends Client {
         });
     }
 
-    public start() {
+    public async start() {
+        await mongoose.connect(process.env.MONGODB_URI as string);
         return super.login(process.env.DISCORD_TOKEN as string);
     }
 }
