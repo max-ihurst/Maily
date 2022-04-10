@@ -6,16 +6,27 @@ import 'dotenv/config';
 declare module 'discord.js' {
     interface Client {
         commands: CommandHandler;
+        _cachedMails: Set<string>;
     }
 }
 
 export default class ModMail extends Client {
     constructor() {
         super({
-            intents: [Intents.FLAGS.GUILDS],
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.DIRECT_MESSAGES,
+                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+                Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+                Intents.FLAGS.GUILD_MESSAGES,
+            ],
+
+            partials: ['MESSAGE', 'CHANNEL'],
         });
 
         this.commands = new CommandHandler(this);
+
+        this._cachedMails = new Set();
 
         this.on('ready', () => console.log('Yoo this is ready!'));
 
