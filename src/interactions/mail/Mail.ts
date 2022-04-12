@@ -12,4 +12,7 @@ export const MailCommand = new SlashCommandBuilder()
                     .setName('reason')
                     .setDescription('The reason for opening the mail ticket.')
             )
+    )
+    .addSubcommand((command) =>
+        command.setName('close').setDescription('Send to close a mail ticket.')
     );
