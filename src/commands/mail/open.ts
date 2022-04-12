@@ -209,10 +209,10 @@ export default class MailOpenCommand implements Command {
             await interaction.editReply({ embeds: [pages[num]] });
         });
 
-        collector.on('end', async () => {
+        collector.on('end', async (_, reason) => {
             this.client._cachedMails.delete(interaction.user.id);
 
-            if (interaction.channel?.messages.cache.get(msg.id)) {
+            if (reason == 'time') {
                 await interaction.followUp({
                     content: 'Your time ran out. You took too long!',
                     ephemeral: true,
