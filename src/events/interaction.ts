@@ -88,6 +88,7 @@ export default class InteractionEvent implements Event {
             }
         } else if (interaction.customId == 'CLOSE') {
             const command = this.client.commands.modules.get('close');
+            row.components[1].disabled = true;
             command?.execute(interaction);
         }
 
