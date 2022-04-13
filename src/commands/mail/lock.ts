@@ -69,9 +69,10 @@ export default class MailLockCommand implements Command {
         } catch (error) {
             console.error(error);
 
-            await interaction.reply(
-                'There was an error locking this mail ticket!'
-            );
+            await interaction.reply({
+                content: 'There was an error locking this mail ticket!',
+                ephemeral: true,
+            });
         }
     }
 }

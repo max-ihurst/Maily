@@ -37,6 +37,10 @@ export default class MailUnlockCommand implements Command {
                 [Permissions.FLAGS.VIEW_CHANNEL.toString()]: true,
             });
 
+            if (!interaction.deferred) {
+                await interaction.reply('Successfully locked the mail ticket.');
+            }
+
             try {
                 const message = await interaction.channel?.messages.fetch(
                     doc.message
@@ -62,9 +66,10 @@ export default class MailUnlockCommand implements Command {
         } catch (error) {
             console.error(error);
 
-            await interaction.reply(
-                'There was an error unlocking this mail ticket!'
-            );
+            await interaction.reply({
+                content: 'There was an error unlocking this mail ticket!',
+                ephemeral: true,
+            });
         }
     }
 }

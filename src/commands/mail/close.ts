@@ -58,7 +58,7 @@ export default class MailCloseCommand implements Command {
             await message.edit({
                 content: message?.content,
                 embeds: [message.embeds[0]],
-                components: [row],
+                components: message.components,
             });
         } catch (error) {
             console.log(error);
