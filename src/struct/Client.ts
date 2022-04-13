@@ -1,11 +1,13 @@
 import { Client, Intents } from 'discord.js';
-import CommandHandler from '../handlers/CommandHandler';
+import CommandHandler from '../handlers/Command';
+import EventHandler from '../handlers/Event';
 import * as mongoose from 'mongoose';
 import 'dotenv/config';
 
 declare module 'discord.js' {
     interface Client {
         commands: CommandHandler;
+        events: EventHandler;
         _cachedMails: Set<string>;
     }
 }
@@ -25,6 +27,7 @@ export default class ModMail extends Client {
         });
 
         this.commands = new CommandHandler(this);
+        this.events = new EventHandler(this);
 
         this._cachedMails = new Set();
 
