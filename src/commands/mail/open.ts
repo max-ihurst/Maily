@@ -92,9 +92,11 @@ export default class MailOpenCommand implements Command {
 
         await msg.react('◀️');
         await msg.react('▶️');
-        await msg.react('1️⃣');
-        await msg.react('2️⃣');
-        await msg.react('3️⃣');
+
+        const index = ['1️⃣', '2️⃣', '3️⃣'];
+        for (let i = 0; i < chunks[0].length; i++) {
+            await msg.react(index[i]);
+        }
 
         const filter = (_: MessageReaction, user: User) =>
             user.id == interaction.user.id;
@@ -109,6 +111,7 @@ export default class MailOpenCommand implements Command {
 
             if (typeof index == 'number') {
                 const guild = chunks[num][index - 1];
+                if (!guild) return;
 
                 const doc = await MailModel.findOne({
                     guild: guild.id,
