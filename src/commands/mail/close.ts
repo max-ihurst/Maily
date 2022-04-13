@@ -4,6 +4,7 @@ import {
     Client,
     MessageActionRow,
     MessageButton,
+    Message,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -55,7 +56,7 @@ export default class MailCloseCommand implements Command {
         row.components.forEach((component) => (component.disabled = true));
 
         const collector = interaction.channel?.createMessageComponentCollector({
-            time: 3 * 1000,
+            time: 60 * 1000,
         });
 
         this.client._cachedMails.add(interaction.channel?.id as string);
@@ -75,6 +76,8 @@ export default class MailCloseCommand implements Command {
                         components: [row],
                     });
                 }
+
+                return collector.stop('deleted');
             } else {
                 try {
                     await interaction.editReply({
@@ -97,6 +100,18 @@ export default class MailCloseCommand implements Command {
                     content:
                         'You have ran out of time for the closing of the ticket!',
                     components: [row],
+                });
+            } else if (reason == 'user') {
+                const msg = (await interaction.channel?.messages.fetch(
+                    doc.message
+                )) as Message;
+
+                msg.components[0].components[1].disabled = false;
+
+                msg.edit({
+                    content: msg.content,
+                    embeds: [msg.embeds[0]],
+                    components: msg.components,
                 });
             }
         });

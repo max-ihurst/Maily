@@ -7,6 +7,8 @@ import {
     User,
     MessageReaction,
     Permissions,
+    MessageActionRow,
+    MessageButton,
 } from 'discord.js';
 
 import * as emoji from 'node-emoji';
@@ -42,21 +44,16 @@ export default class MailOpenCommand implements Command {
         }
 
         /* Fetches all the guilds the member is in */
-        try {
-            const guilds = Array.from(this.client.guilds.cache.values());
-            for (const guild of guilds) {
+        const guilds = Array.from(this.client.guilds.cache.values());
+        for (const guild of guilds) {
+            try {
                 await guild.members.fetch({ user: interaction.user.id });
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            await interaction.reply({
-                content: 'There was an error fetching guilds!',
-                ephemeral: true,
-            });
-
-            return console.error(error);
         }
 
-        const guilds = chunk(
+        const chunks = chunk(
             Array.from(
                 this.client.guilds.cache
                     .filter((g) => g.members.cache.has(interaction.user.id))
@@ -69,8 +66,8 @@ export default class MailOpenCommand implements Command {
         const pages: MessageEmbed[] = [];
 
         /* Create the embed pages */
-        for (let i = 0; i < guilds.length; i++) {
-            const guild = guilds[i];
+        for (let i = 0; i < chunks.length; i++) {
+            const guilds = chunks[i];
 
             const embed = new MessageEmbed()
                 .setColor('BLURPLE')
@@ -78,10 +75,10 @@ export default class MailOpenCommand implements Command {
                 .setDescription('Select the server you want to create mail to.')
                 .setFooter({ text: `Page: ${i + 1} / ${guilds.length}` });
 
-            for (let j = 0; j < guild.length; j++) {
-                const g = guild[j];
+            for (let j = 0; j < guilds.length; j++) {
+                const guild = guilds[j];
 
-                embed.addField(`${j + 1}. ${g.name}`, g.id);
+                embed.addField(`${j + 1}. ${guild.name}`, guild.id);
             }
             pages.push(embed);
         }
@@ -111,7 +108,7 @@ export default class MailOpenCommand implements Command {
             const index = numberify(icon.key);
 
             if (typeof index == 'number') {
-                const guild = guilds[num][index - 1];
+                const guild = chunks[num][index - 1];
 
                 const doc = await MailModel.findOne({
                     guild: guild.id,
@@ -153,14 +150,20 @@ export default class MailOpenCommand implements Command {
                         ],
                     });
 
-                    const doc = new MailModel({
-                        id: channel?.id,
-                        guild: guild.id,
-                        user: interaction.user.id,
-                    });
-
-                    await channel?.send({
+                    const msg = await channel?.send({
                         content: `<@${interaction.user.id}>`,
+                        components: [
+                            new MessageActionRow().addComponents([
+                                new MessageButton()
+                                    .setCustomId('LOCK')
+                                    .setStyle('SECONDARY')
+                                    .setEmoji('🔒'),
+                                new MessageButton()
+                                    .setCustomId('CLOSE')
+                                    .setStyle('SECONDARY')
+                                    .setEmoji('❌'),
+                            ]),
+                        ],
                         embeds: [
                             new MessageEmbed()
                                 .setColor('BLURPLE')
@@ -174,6 +177,13 @@ export default class MailOpenCommand implements Command {
                                     ].join('\n')
                                 ),
                         ],
+                    });
+
+                    const doc = new MailModel({
+                        id: channel?.id,
+                        message: msg.id,
+                        guild: guild.id,
+                        user: interaction.user.id,
                     });
 
                     await doc.save();

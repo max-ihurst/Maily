@@ -8,6 +8,10 @@ export default mongoose.model<Mail>(
             type: String,
             required: true,
         },
+        message: {
+            type: String,
+            required: true,
+        },
         guild: {
             type: String,
             required: true,
