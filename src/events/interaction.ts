@@ -1,13 +1,4 @@
-import {
-    Client,
-    CommandInteraction,
-    CacheType,
-    TextChannel,
-    Permissions,
-    Message,
-    MessageButton,
-    MessageActionRow,
-} from 'discord.js';
+import { Client, CommandInteraction, CacheType } from 'discord.js';
 
 import MailModel from '../models/Mails';
 import Event from '../Event';
@@ -32,70 +23,14 @@ export default class InteractionEvent implements Event {
 
         if (!doc) return;
 
-        const { message } = interaction;
-        const channel = this.client.channels.cache.get(doc.id) as TextChannel;
+        const command = this.client.commands.modules.get(
+            interaction.customId.toLowerCase()
+        );
 
-        const row = (message.components as MessageActionRow[])[0];
-
-        if (interaction.customId == 'LOCK') {
+        if (['LOCK', 'UNLOCK'].includes(interaction.customId)) {
             await interaction.deferUpdate();
-
-            try {
-                await channel.permissionOverwrites.set([
-                    {
-                        id: interaction.guild?.id as string,
-                        deny: Permissions.FLAGS.VIEW_CHANNEL,
-                    },
-                ]);
-
-                row.spliceComponents(
-                    0,
-                    1,
-                    new MessageButton()
-                        .setCustomId('UNLOCK')
-                        .setStyle('SECONDARY')
-                        .setEmoji('🔓')
-                );
-            } catch (error) {
-                console.error(error);
-
-                await interaction.reply(
-                    'There was an error locking this mail ticket!'
-                );
-            }
-        } else if (interaction.customId == 'UNLOCK') {
-            await interaction.deferUpdate();
-
-            try {
-                await channel.permissionOverwrites.edit(doc.user, {
-                    [Permissions.FLAGS.VIEW_CHANNEL.toString()]: true,
-                });
-
-                row.spliceComponents(
-                    0,
-                    1,
-                    new MessageButton()
-                        .setCustomId('LOCK')
-                        .setStyle('SECONDARY')
-                        .setEmoji('🔒')
-                );
-            } catch (error) {
-                console.error(error);
-
-                await interaction.reply(
-                    'There was an error unlocking this mail ticket!'
-                );
-            }
-        } else if (interaction.customId == 'CLOSE') {
-            const command = this.client.commands.modules.get('close');
-            row.components[1].disabled = true;
-            command?.execute(interaction);
         }
 
-        await (interaction.message as Message).edit({
-            content: message.content,
-            embeds: [message.embeds[0]],
-            components: [row],
-        });
+        command?.execute(interaction);
     }
 }

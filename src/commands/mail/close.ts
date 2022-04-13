@@ -48,6 +48,22 @@ export default class MailCloseCommand implements Command {
                 .setLabel('No'),
         ]);
 
+        try {
+            const message = (await interaction.channel?.messages.fetch(
+                doc.message
+            )) as Message;
+
+            message.components[0].components[1].disabled = true;
+
+            await message.edit({
+                content: message?.content,
+                embeds: [message.embeds[0]],
+                components: [row],
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
         await interaction.reply({
             content: 'Are you sure you want to close this mail ticket?',
             components: [row],

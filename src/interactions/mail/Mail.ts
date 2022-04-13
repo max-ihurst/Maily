@@ -15,4 +15,14 @@ export const MailCommand = new SlashCommandBuilder()
     )
     .addSubcommand((command) =>
         command.setName('close').setDescription('Send to close a mail ticket.')
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('lock')
+            .setDescription(
+                'Locks the ticket mail from the creator and other accessed users.'
+            )
+    )
+    .addSubcommand((command) =>
+        command.setName('unlock').setDescription('Unlocks the mail ticket!')
     );
