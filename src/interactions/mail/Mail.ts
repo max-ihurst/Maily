@@ -25,4 +25,28 @@ export const MailCommand = new SlashCommandBuilder()
     )
     .addSubcommand((command) =>
         command.setName('unlock').setDescription('Unlocks the mail ticket!')
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('add')
+            .setDescription('Adds a user to interact in the mail ticket.')
+            .addUserOption((option) =>
+                option
+                    .setName('user')
+                    .setDescription('The user to add to the mail ticket.')
+                    .setRequired(true)
+            )
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('remove')
+            .setDescription(
+                'Remove a user from interacting within the mail ticket.'
+            )
+            .addUserOption((option) =>
+                option
+                    .setName('user')
+                    .setDescription('The user to remove from the mail ticket.')
+                    .setRequired(true)
+            )
     );
