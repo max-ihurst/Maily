@@ -137,20 +137,35 @@ export default class MailOpenCommand implements Command {
                     }
                 }
 
+                const settings = this.client.settings.cache.get(guild.id);
+
                 /* Creating the mail ticket channel */
                 try {
+                    const permissions = [
+                        {
+                            allow: Permissions.FLAGS.VIEW_CHANNEL,
+                            id: interaction.user.id,
+                        },
+                        {
+                            deny: Permissions.FLAGS.VIEW_CHANNEL,
+                            id: guild.id,
+                        },
+                    ];
+
+                    if (settings?.access) {
+                        const role = guild?.roles.cache.get(settings.access);
+
+                        if (role) {
+                            permissions.push({
+                                allow: Permissions.FLAGS.VIEW_CHANNEL,
+                                id: role.id,
+                            });
+                        }
+                    }
+
                     const channel = await guild.channels.create('modmail', {
                         type: 'GUILD_TEXT',
-                        permissionOverwrites: [
-                            {
-                                allow: Permissions.FLAGS.VIEW_CHANNEL,
-                                id: interaction.user.id,
-                            },
-                            {
-                                deny: Permissions.FLAGS.VIEW_CHANNEL,
-                                id: guild.id,
-                            },
-                        ],
+                        permissionOverwrites: permissions,
                     });
 
                     const msg = await channel?.send({

@@ -2,7 +2,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import 'dotenv/config';
 
-import { PingCommand, MailCommand } from './interactions/index';
+import { PingCommand, MailCommand, SettingsCommand } from './interactions/index';
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN as string);
 
@@ -15,7 +15,8 @@ try {
             {
                 body: [
                     PingCommand, 
-                    MailCommand
+                    MailCommand,
+                    SettingsCommand
                 ],
             }
         );
@@ -28,7 +29,8 @@ try {
             {
                 body: [
                     PingCommand, 
-                    MailCommand
+                    MailCommand,
+                    SettingsCommand
                 ],
             }
         );
