@@ -73,7 +73,7 @@ export default class MailOpenCommand implements Command {
                 .setColor('BLURPLE')
                 .setTitle('Select server.')
                 .setDescription('Select the server you want to create mail to.')
-                .setFooter({ text: `Page: ${i + 1} / ${guilds.length}` });
+                .setFooter({ text: `Page: ${i + 1} / ${chunks.length}` });
 
             for (let j = 0; j < guilds.length; j++) {
                 const guild = guilds[j];
