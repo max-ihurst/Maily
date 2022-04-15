@@ -25,6 +25,18 @@ export default class SettingsManager {
         this.cache.set(doc.id, doc);
     }
 
+    public async increment(id: string, key: Settings): Promise<void> {
+        let doc = await GuildModel.findOne({ id });
+
+        if (!doc) {
+            doc = new GuildModel({ id });
+        }
+
+        doc.set(key, Number(doc[key]) + 1);
+        await doc.save();
+        this.cache.set(doc.id, doc);
+    }
+
     public async init(): Promise<void> {
         const docs = await GuildModel.find();
         for (const doc of docs) {

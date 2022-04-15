@@ -163,10 +163,17 @@ export default class MailOpenCommand implements Command {
                         }
                     }
 
-                    const channel = await guild.channels.create('modmail', {
-                        type: 'GUILD_TEXT',
-                        permissionOverwrites: permissions,
-                    });
+                    const channel = await guild.channels.create(
+                        interaction.user.username +
+                            '-' +
+                            String(settings?.mail ?? 1).padStart(4, '0'),
+                        {
+                            type: 'GUILD_TEXT',
+                            permissionOverwrites: permissions,
+                        }
+                    );
+
+                    await this.client.settings.increment(guild.id, 'mail');
 
                     const msg = await channel?.send({
                         content: `<@${interaction.user.id}>`,

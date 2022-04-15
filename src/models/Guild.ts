@@ -8,6 +8,11 @@ export default mongoose.model<Guild>(
             type: String,
             required: true,
         },
+        mail: {
+            type: Number,
+            default: 1,
+            required: true,
+        },
         access: {
             type: String,
             required: false,
