@@ -11,6 +11,7 @@ import {
     MessageButton,
 } from 'discord.js';
 
+import { EMBED_COLOR } from '../../Constants';
 import * as emoji from 'node-emoji';
 import numberify from 'words-to-numbers';
 import { chunk } from 'lodash';
@@ -70,7 +71,7 @@ export default class MailOpenCommand implements Command {
             const guilds = chunks[i];
 
             const embed = new MessageEmbed()
-                .setColor('BLURPLE')
+                .setColor(EMBED_COLOR)
                 .setTitle('Select server.')
                 .setDescription('Select the server you want to create mail to.')
                 .setFooter({ text: `Page: ${i + 1} / ${chunks.length}` });
@@ -181,7 +182,7 @@ export default class MailOpenCommand implements Command {
                     await this.client.settings.increment(guild.id, 'mail');
 
                     const embed = new MessageEmbed()
-                        .setColor('BLURPLE')
+                        .setColor(EMBED_COLOR)
                         .setDescription(
                             settings?.message
                                 ? settings.message
