@@ -10,6 +10,7 @@ export interface Guild {
     mail: number;
     parent: string;
     access: string;
+    message: string;
 }
 
-export type Settings = 'access' | 'parent' | 'mail';
+export type Settings = 'access' | 'parent' | 'message' | 'mail';

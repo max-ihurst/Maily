@@ -31,6 +31,19 @@ export const SettingsCommand = new SlashCommandBuilder()
     )
     .addSubcommand((command) =>
         command
+            .setName('message')
+            .setDescription(
+                'The introducing message send to a mail ticket when created (use {user} to mention the user directly)'
+            )
+            .addStringOption((option) =>
+                option
+                    .setName('message')
+                    .setDescription('The introducing message.')
+                    .setRequired(true)
+            )
+    )
+    .addSubcommand((command) =>
+        command
             .setName('reset')
             .setDescription('Send to reset a setting.')
             .addStringOption((option) =>
@@ -40,5 +53,6 @@ export const SettingsCommand = new SlashCommandBuilder()
                     .setRequired(true)
                     .addChoice('access', 'access')
                     .addChoice('category', 'parent')
+                    .addChoice('message', 'message')
             )
     );

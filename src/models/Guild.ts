@@ -21,5 +21,9 @@ export default mongoose.model<Guild>(
             type: String,
             required: false,
         },
+        message: {
+            type: String,
+            required: false,
+        },
     })
 );

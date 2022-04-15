@@ -178,10 +178,25 @@ export default class MailOpenCommand implements Command {
                         }
                     );
 
+                    console.log(settings);
+
                     await this.client.settings.increment(guild.id, 'mail');
+
+                    const embed = new MessageEmbed()
+                        .setColor('BLURPLE')
+                        .setDescription(
+                            settings?.message
+                                ? settings.message.substring(0, 4096)
+                                : 'Support will be with you shortly.'
+                        );
+
+                    if (reason) {
+                        embed.addField('Reason', reason.substring(0, 1024));
+                    }
 
                     const msg = await channel?.send({
                         content: `<@${interaction.user.id}>`,
+                        embeds: [embed],
                         components: [
                             new MessageActionRow().addComponents([
                                 new MessageButton()
@@ -193,19 +208,6 @@ export default class MailOpenCommand implements Command {
                                     .setStyle('SECONDARY')
                                     .setEmoji('❌'),
                             ]),
-                        ],
-                        embeds: [
-                            new MessageEmbed()
-                                .setColor('BLURPLE')
-                                .setDescription(
-                                    [
-                                        'Support will be with you shortly.',
-                                        reason
-                                            ? '**Reason: **' +
-                                              reason.substring(0, 1000)
-                                            : '',
-                                    ].join('\n')
-                                ),
                         ],
                     });
 
