@@ -178,15 +178,18 @@ export default class MailOpenCommand implements Command {
                         }
                     );
 
-                    console.log(settings);
-
                     await this.client.settings.increment(guild.id, 'mail');
 
                     const embed = new MessageEmbed()
                         .setColor('BLURPLE')
                         .setDescription(
                             settings?.message
-                                ? settings.message.substring(0, 4096)
+                                ? settings.message
+                                      .substring(0, 4096)
+                                      .replace(
+                                          '{user}',
+                                          `<@${interaction.user.id}>`
+                                      )
                                 : 'Support will be with you shortly.'
                         );
 
