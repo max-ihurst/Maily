@@ -8,7 +8,8 @@ export interface Mail {
 export interface Guild {
     id: string;
     mail: number;
+    parent: string;
     access: string;
 }
 
-export type Settings = 'access' | 'mail';
+export type Settings = 'access' | 'parent' | 'mail';

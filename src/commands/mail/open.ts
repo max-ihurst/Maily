@@ -152,6 +152,10 @@ export default class MailOpenCommand implements Command {
                         },
                     ];
 
+                    const category = guild.channels.cache.get(
+                        settings?.parent as string
+                    );
+
                     if (settings?.access) {
                         const role = guild?.roles.cache.get(settings.access);
 
@@ -169,6 +173,7 @@ export default class MailOpenCommand implements Command {
                             String(settings?.mail ?? 1).padStart(4, '0'),
                         {
                             type: 'GUILD_TEXT',
+                            parent: category ? category.id : undefined,
                             permissionOverwrites: permissions,
                         }
                     );

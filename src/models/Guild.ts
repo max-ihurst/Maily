@@ -13,6 +13,10 @@ export default mongoose.model<Guild>(
             default: 1,
             required: true,
         },
+        parent: {
+            type: String,
+            required: false,
+        },
         access: {
             type: String,
             required: false,
