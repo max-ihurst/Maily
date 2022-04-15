@@ -28,4 +28,17 @@ export const SettingsCommand = new SlashCommandBuilder()
                     .addChannelType(ChannelType.GuildCategory as number)
                     .setRequired(true)
             )
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('reset')
+            .setDescription('Send to reset a setting.')
+            .addStringOption((option) =>
+                option
+                    .setName('setting')
+                    .setDescription('The setting to reset.')
+                    .setRequired(true)
+                    .addChoice('access', 'access')
+                    .addChoice('category', 'parent')
+            )
     );

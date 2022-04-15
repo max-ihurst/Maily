@@ -15,14 +15,22 @@ export default class SettingsManager {
         let doc = await GuildModel.findOne({ id });
 
         if (!doc) {
-            doc = new GuildModel({
-                id,
-            });
+            doc = new GuildModel({ id });
         }
 
         doc.set(key, value);
         await doc.save();
         this.cache.set(doc.id, doc);
+    }
+
+    public async delete(id: string, key: Settings): Promise<void> {
+        const doc = await GuildModel.findOne({ id });
+
+        if (doc) {
+            doc.set(key, undefined, { strict: false });
+            await doc.save();
+            this.cache.set(doc.id, doc);
+        }
     }
 
     public async increment(id: string, key: Settings): Promise<void> {
