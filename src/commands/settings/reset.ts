@@ -15,8 +15,6 @@ export default class SettingsResetCommand implements Command {
     ): Promise<void> {
         const setting = interaction.options.getString('setting') as Settings;
 
-        console.log(setting);
-
         await this.client.settings.delete(
             interaction.guild?.id as string,
             setting
