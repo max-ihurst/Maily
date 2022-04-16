@@ -4,6 +4,7 @@ import Command from '../../../Command';
 export default class SettingsAccessCommand implements Command {
     public client: Client;
     public name = 'access-role';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

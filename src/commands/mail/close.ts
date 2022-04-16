@@ -13,6 +13,7 @@ import Command from '../../Command';
 export default class MailCloseCommand implements Command {
     public client: Client;
     public name = 'close';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

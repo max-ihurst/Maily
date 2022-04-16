@@ -4,6 +4,7 @@ import Command from '../../../Command';
 export default class SettingsCategoryCommand implements Command {
     public client: Client;
     public name = 'category';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

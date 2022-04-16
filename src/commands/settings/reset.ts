@@ -5,6 +5,7 @@ import Command from '../../Command';
 export default class SettingsResetCommand implements Command {
     public client: Client;
     public name = 'reset';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

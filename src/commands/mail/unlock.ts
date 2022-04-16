@@ -13,6 +13,7 @@ import Command from '../../Command';
 export default class MailUnlockCommand implements Command {
     public client: Client;
     public name = 'unlock';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

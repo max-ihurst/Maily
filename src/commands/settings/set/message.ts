@@ -4,6 +4,7 @@ import Command from '../../../Command';
 export default class SettingsMessageCommand implements Command {
     public client: Client;
     public name = 'message';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

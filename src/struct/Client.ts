@@ -36,12 +36,19 @@ export default class ModMail extends Client {
 
         this.once('ready', () => console.log('Yoo this is ready!'));
 
-        this.on('interactionCreate', (interaction) => {
+        this.on('interactionCreate', async (interaction) => {
             if (!interaction.isCommand()) return;
 
             const command = this.commands.modules.get(interaction.commandName);
 
             if (command) {
+                if (command.guildOnly && !interaction.guild) {
+                    return await interaction.reply({
+                        content: 'This command can only be used in guilds.',
+                        ephemeral: true,
+                    });
+                }
+
                 try {
                     command.execute(interaction);
                 } catch (error) {

@@ -13,6 +13,7 @@ import Command from '../../Command';
 export default class MailRemoveCommand implements Command {
     public client: Client;
     public name = 'remove';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

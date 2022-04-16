@@ -13,6 +13,7 @@ import Command from '../../Command';
 export default class MailAddCommand implements Command {
     public client: Client;
     public name = 'add';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;

@@ -4,6 +4,7 @@ import Command from '../Command';
 export default class MailCommand implements Command {
     public client: Client;
     public name = 'mail';
+    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;
