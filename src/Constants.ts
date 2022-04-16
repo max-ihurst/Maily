@@ -1,1 +1,4 @@
-export const EMBED_COLOR = 0xcd4545;
+export default {
+    EMBED_COLOR: 0xcd4545,
+    DEFAULT_MESSAGE: 'Support will be with you shortly.',
+};
