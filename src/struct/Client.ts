@@ -34,7 +34,7 @@ export default class ModMail extends Client {
 
         this._cachedMails = new Set();
 
-        this.on('ready', () => console.log('Yoo this is ready!'));
+        this.once('ready', () => console.log('Yoo this is ready!'));
 
         this.on('interactionCreate', (interaction) => {
             if (!interaction.isCommand()) return;
