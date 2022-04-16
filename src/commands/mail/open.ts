@@ -183,6 +183,7 @@ export default class MailOpenCommand implements Command {
 
                     const embed = new MessageEmbed()
                         .setColor(EMBED_COLOR)
+                        .setTimestamp()
                         .setDescription(
                             settings?.message
                                 ? settings.message
@@ -225,7 +226,7 @@ export default class MailOpenCommand implements Command {
                     await doc.save();
 
                     await interaction.followUp({
-                        content: `Your mail ticket was created in **${guild.name}**!`,
+                        content: `Your mail ticket was created in **${guild.name}**! (<#${channel.id}>)`,
                         ephemeral: true,
                     });
 
