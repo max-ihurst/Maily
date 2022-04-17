@@ -14,6 +14,7 @@ export default class MailRemoveCommand implements Command {
     public client: Client;
     public name = 'remove';
     public guildOnly = true;
+    public permissions = [Permissions.FLAGS.MANAGE_GUILD];
 
     public constructor(client: Client) {
         this.client = client;

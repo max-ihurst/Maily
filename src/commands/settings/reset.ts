@@ -1,4 +1,4 @@
-import { CommandInteraction, CacheType, Client } from 'discord.js';
+import { CommandInteraction, CacheType, Client, Permissions } from 'discord.js';
 import { Settings } from '../../types/types';
 import Command from '../../Command';
 
@@ -6,6 +6,7 @@ export default class SettingsResetCommand implements Command {
     public client: Client;
     public name = 'reset';
     public guildOnly = true;
+    public permissions = [Permissions.FLAGS.MANAGE_GUILD];
 
     public constructor(client: Client) {
         this.client = client;

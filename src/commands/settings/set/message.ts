@@ -1,10 +1,11 @@
-import { CommandInteraction, CacheType, Client } from 'discord.js';
+import { CommandInteraction, CacheType, Client, Permissions } from 'discord.js';
 import Command from '../../../Command';
 
 export default class SettingsMessageCommand implements Command {
     public client: Client;
     public name = 'message';
     public guildOnly = true;
+    public permissions = [Permissions.FLAGS.MANAGE_GUILD];
 
     public constructor(client: Client) {
         this.client = client;
