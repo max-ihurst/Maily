@@ -6,6 +6,7 @@ import {
     TextChannel,
     MessageButton,
     GuildMember,
+    OverwriteResolvable,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -52,13 +53,23 @@ export default class MailLockCommand implements Command {
         }
 
         try {
+            const permissions: OverwriteResolvable[] = [
+                {
+                    id: interaction.guild?.id as string,
+                    deny: [Permissions.FLAGS.VIEW_CHANNEL],
+                },
+            ];
+
+            const role = interaction.guild?.roles.cache.get(settings.access);
+            if (role) {
+                permissions.push({
+                    id: role.id,
+                    allow: [Permissions.FLAGS.VIEW_CHANNEL],
+                });
+            }
+
             await (interaction.channel as TextChannel).permissionOverwrites.set(
-                [
-                    {
-                        id: interaction.guild?.id as string,
-                        deny: Permissions.FLAGS.VIEW_CHANNEL,
-                    },
-                ]
+                permissions
             );
 
             if (!interaction.deferred) {
