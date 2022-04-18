@@ -8,7 +8,7 @@ export default mongoose.model<Mail>(
             type: String,
             required: true,
         },
-        message: {
+        panel: {
             type: String,
             required: true,
         },

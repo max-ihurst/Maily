@@ -48,7 +48,7 @@ export default class MailLockCommand implements Command {
 
             try {
                 const message = await interaction.channel?.messages.fetch(
-                    doc.message
+                    doc.panel
                 );
 
                 message?.components[0].spliceComponents(

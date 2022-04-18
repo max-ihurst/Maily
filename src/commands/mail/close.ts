@@ -53,7 +53,7 @@ export default class MailCloseCommand implements Command {
 
         try {
             const message = (await interaction.channel?.messages.fetch(
-                doc.message
+                doc.panel
             )) as Message;
 
             message.components[0].components[1].disabled = true;
@@ -122,7 +122,7 @@ export default class MailCloseCommand implements Command {
                 });
             } else if (reason == 'user') {
                 const msg = (await interaction.channel?.messages.fetch(
-                    doc.message
+                    doc.panel
                 )) as Message;
 
                 msg.components[0].components[1].disabled = false;

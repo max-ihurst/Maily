@@ -218,7 +218,7 @@ export default class MailOpenCommand implements Command {
 
                     const doc = new MailModel({
                         id: channel?.id,
-                        message: msg.id,
+                        panel: msg.id,
                         guild: guild.id,
                         user: interaction.user.id,
                     });

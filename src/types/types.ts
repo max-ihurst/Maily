@@ -1,6 +1,6 @@
 export interface Mail {
     id: string;
-    message: string;
+    panel: string;
     guild: string;
     user: string;
 }
