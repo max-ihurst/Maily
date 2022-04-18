@@ -5,16 +5,17 @@ import {
     TextChannel,
     Permissions,
     User,
+    GuildMember,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
+import { Guild } from '../../types/types';
 import Command from '../../Command';
 
 export default class MailAddCommand implements Command {
     public client: Client;
     public name = 'add';
     public guildOnly = true;
-    public permissions = [Permissions.FLAGS.MANAGE_GUILD];
 
     public constructor(client: Client) {
         this.client = client;
@@ -23,12 +24,26 @@ export default class MailAddCommand implements Command {
     public async execute(
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
-        const doc = await MailModel.findOne({ id: interaction.channel?.id });
         const user = interaction.options.getUser('user') as User;
+        const doc = await MailModel.findOne({ id: interaction.channel?.id });
+        const settings = this.client.settings.cache.get(
+            interaction.guild?.id as string
+        ) as Guild;
 
         if (!doc) {
             return await interaction.reply({
                 content: 'This command can only be used in a mail ticket!',
+                ephemeral: true,
+            });
+        } else if (
+            !this.client.util.hasAccess(
+                settings,
+                interaction.member as GuildMember
+            )
+        ) {
+            return await interaction.reply({
+                content:
+                    'You must have either the mail access role or manage guild permissions.',
                 ephemeral: true,
             });
         }
