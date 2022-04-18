@@ -1,4 +1,4 @@
-import { Client, Intents, Permissions } from 'discord.js';
+import { Client, Intents } from 'discord.js';
 import CommandHandler from '../handlers/Command';
 import EventHandler from '../handlers/Event';
 import SettingsManager from './managers/Settings';
@@ -39,42 +39,12 @@ export default class ModMail extends Client {
 
         this.once('ready', () => console.log('Yoo this is ready!'));
 
-        this.on('interactionCreate', async (interaction) => {
+        this.on('interactionCreate', (interaction) => {
             if (!interaction.isCommand()) return;
 
-            const name =
-                interaction.options.getSubcommand(false) ||
-                interaction.commandName;
-
-            if (!name) return;
-
-            const command = this.commands.modules.get(name);
+            const command = this.commands.modules.get(interaction.commandName);
 
             if (command) {
-                const permissions = interaction.member
-                    ?.permissions as Permissions;
-
-                if (command.guildOnly && !interaction.guild) {
-                    return await interaction.reply({
-                        content: 'This command can only be used in guilds.',
-                        ephemeral: true,
-                    });
-                } else if (
-                    command.permissions &&
-                    !permissions.has(command.permissions)
-                ) {
-                    const missing = permissions.missing(command.permissions);
-
-                    return await interaction.reply({
-                        content: [
-                            "You're missing permissions to run this command",
-                            '__**Missing Permissions**__',
-                            missing.map((perm) => `- ${perm}`).join('\n'),
-                        ].join('\n'),
-                        ephemeral: true,
-                    });
-                }
-
                 try {
                     command.execute(interaction);
                 } catch (error) {

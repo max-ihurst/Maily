@@ -15,7 +15,6 @@ import Command from '../../Command';
 export default class MailLockCommand implements Command {
     public client: Client;
     public name = 'lock';
-    public guildOnly = true;
 
     public constructor(client: Client) {
         this.client = client;
@@ -29,7 +28,12 @@ export default class MailLockCommand implements Command {
             interaction.guild?.id as string
         ) as Guild;
 
-        if (!doc) {
+        if (interaction.channel?.type == 'DM') {
+            return await interaction.reply({
+                content: "This command cannot be used in DM's",
+                ephemeral: true,
+            });
+        } else if (!doc) {
             return await interaction.reply({
                 content: 'This command must be used in a mail ticket!',
                 ephemeral: true,
@@ -42,7 +46,7 @@ export default class MailLockCommand implements Command {
         ) {
             return await interaction.reply({
                 content:
-                    'You must have either the mail access role or manage guild permissions.',
+                    'You must have either the mail access role or `MANAGE_GUILD` permissions.',
                 ephemeral: true,
             });
         }

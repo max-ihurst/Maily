@@ -4,8 +4,6 @@ import Command from '../../../Command';
 export default class SettingsAccessCommand implements Command {
     public client: Client;
     public name = 'access-role';
-    public guildOnly = true;
-    public permissions = [Permissions.FLAGS.MANAGE_GUILD];
 
     public constructor(client: Client) {
         this.client = client;
@@ -16,12 +14,38 @@ export default class SettingsAccessCommand implements Command {
     ): Promise<void> {
         const role = interaction.options.getRole('role');
 
-        await this.client.settings.set(
-            interaction.guild?.id as string,
-            'access',
-            role?.id
-        );
+        if (interaction.channel?.type == 'DM') {
+            return await interaction.reply({
+                content: "This command cannot be used in DM's",
+                ephemeral: true,
+            });
+        } else if (
+            !interaction.memberPermissions?.has(Permissions.FLAGS.MANAGE_GUILD)
+        ) {
+            return await interaction.reply({
+                content:
+                    'You need to have `MANAGE_GUILD` permissions to run this command.',
+                ephemeral: true,
+            });
+        }
 
-        await interaction.reply(`Sucessfully set the access role to ${role}.`);
+        try {
+            await this.client.settings.set(
+                interaction.guild?.id as string,
+                'access',
+                role?.id
+            );
+
+            await interaction.reply(
+                `Sucessfully set the access role to ${role}.`
+            );
+        } catch (error) {
+            console.log(error);
+
+            await interaction.reply({
+                content: 'There was an error using this command.',
+                ephemeral: true,
+            });
+        }
     }
 }
