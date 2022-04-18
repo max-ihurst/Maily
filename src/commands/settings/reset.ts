@@ -37,7 +37,7 @@ export default class SettingsResetCommand implements Command {
             );
 
             await interaction.reply(
-                `Successfully reset the ${setting} setting.`
+                `Successfully reset the \`${setting}\` setting.`
             );
         } catch (error) {
             console.log(error);

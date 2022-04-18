@@ -37,7 +37,7 @@ export default class SettingsMessageCommand implements Command {
             );
 
             await interaction.reply(
-                `Sucessfully configured the mail ticket messsage.`
+                `You have successfully set the mail panel message.`
             );
         } catch (error) {
             console.log(error);

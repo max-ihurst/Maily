@@ -37,7 +37,7 @@ export default class SettingsCategoryCommand implements Command {
             );
 
             await interaction.reply(
-                `Sucessfully set the category to ${category?.name}.`
+                `You have sucessfully set \`${category?.name}\` as the mail category.`
             );
         } catch (error) {
             console.log(error);

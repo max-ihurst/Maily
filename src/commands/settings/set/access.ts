@@ -37,7 +37,7 @@ export default class SettingsAccessCommand implements Command {
             );
 
             await interaction.reply(
-                `Sucessfully set the access role to ${role}.`
+                `You have sucessfully set ${role} as the access-role.`
             );
         } catch (error) {
             console.log(error);
