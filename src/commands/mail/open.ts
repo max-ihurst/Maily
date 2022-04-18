@@ -207,11 +207,11 @@ export default class MailOpenCommand implements Command {
                                 new MessageButton()
                                     .setCustomId('LOCK')
                                     .setStyle('SECONDARY')
-                                    .setEmoji('🔒'),
+                                    .setLabel('🔒 Lock'),
                                 new MessageButton()
                                     .setCustomId('CLOSE')
                                     .setStyle('SECONDARY')
-                                    .setEmoji('❌'),
+                                    .setLabel('❌ Close'),
                             ]),
                         ],
                     });

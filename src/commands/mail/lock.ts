@@ -57,7 +57,7 @@ export default class MailLockCommand implements Command {
                     new MessageButton()
                         .setCustomId('UNLOCK')
                         .setStyle('SECONDARY')
-                        .setEmoji('🔓')
+                        .setLabel('🔓 Unlock')
                 );
 
                 await message?.edit({
