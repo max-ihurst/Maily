@@ -72,6 +72,25 @@ export default class MailClaimCommand implements Command {
             doc.claimer = interaction.user.id;
             await doc.save();
 
+            try {
+                const panel = await interaction.channel?.messages.fetch(
+                    doc.panel
+                );
+
+                if (panel) {
+                    const embed = panel.embeds[0];
+                    embed.addField('Claimed', interaction.user.toString());
+
+                    await panel.edit({
+                        content: panel.content,
+                        embeds: [embed],
+                        components: panel.components,
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
             await interaction.reply({
                 content: `This mail ticket has been claimed by ${interaction.user}.`,
             });

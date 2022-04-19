@@ -74,6 +74,25 @@ export default class MailUnclaimCommand implements Command {
 
             await doc.updateOne({ $unset: { claimer: 1 } });
 
+            try {
+                const panel = await interaction.channel?.messages.fetch(
+                    doc.panel
+                );
+
+                if (panel) {
+                    const embed = panel.embeds[0];
+                    embed.spliceFields(embed.fields.length - 1, 1);
+
+                    await panel.edit({
+                        content: panel.content,
+                        embeds: [embed],
+                        components: panel.components,
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
             await interaction.reply({
                 content: `This mail ticket has now been unclaimed.`,
             });
