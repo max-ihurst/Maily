@@ -48,6 +48,11 @@ export default class MailClaimCommand implements Command {
                     'You must have either the mail access role or `MANAGE_GUILD` permissions.',
                 ephemeral: true,
             });
+        } else if (doc.claimer) {
+            return await interaction.reply({
+                content: `This mail ticket is already claimed by <@${doc.claimer}>`,
+                ephemeral: true,
+            });
         }
 
         try {

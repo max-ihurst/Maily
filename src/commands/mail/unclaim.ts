@@ -49,6 +49,11 @@ export default class MailUnclaimCommand implements Command {
                     'You must have either the mail access role or `MANAGE_GUILD` permissions.',
                 ephemeral: true,
             });
+        } else if (!doc.claimer) {
+            return await interaction.reply({
+                content: 'This ticket was never claimed to begin with.',
+                ephemeral: true,
+            });
         }
 
         try {
