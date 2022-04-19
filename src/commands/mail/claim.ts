@@ -80,12 +80,7 @@ export default class MailClaimCommand implements Command {
                 if (panel) {
                     const embed = panel.embeds[0];
                     embed.addField('Claimed', interaction.user.toString());
-
-                    await panel.edit({
-                        content: panel.content,
-                        embeds: [embed],
-                        components: panel.components,
-                    });
+                    await this.client.util.edit(panel, { embeds: [embed] });
                 }
             } catch (error) {
                 console.error(error);

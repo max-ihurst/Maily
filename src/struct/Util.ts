@@ -1,4 +1,10 @@
-import { GuildMember, PermissionResolvable } from 'discord.js';
+import {
+    GuildMember,
+    Message,
+    MessageEditOptions,
+    PermissionResolvable,
+} from 'discord.js';
+
 import { Guild } from '../types/types';
 import Constants from '../Constants';
 
@@ -20,5 +26,16 @@ export default class Utilities {
         }
 
         return 0;
+    }
+
+    public async edit(
+        message: Message,
+        options: MessageEditOptions
+    ): Promise<Message> {
+        return await message.edit({
+            content: options.content ?? message.content,
+            embeds: options.embeds ?? message.embeds,
+            components: options.components ?? message.components,
+        });
     }
 }

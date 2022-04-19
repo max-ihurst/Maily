@@ -6,6 +6,7 @@ import {
     TextChannel,
     MessageButton,
     GuildMember,
+    Message,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -63,11 +64,11 @@ export default class MailUnlockCommand implements Command {
             }
 
             try {
-                const message = await interaction.channel?.messages.fetch(
+                const message = (await interaction.channel?.messages.fetch(
                     doc.panel
-                );
+                )) as Message;
 
-                message?.components[0].spliceComponents(
+                message.components[0].spliceComponents(
                     0,
                     1,
                     new MessageButton()
@@ -76,11 +77,8 @@ export default class MailUnlockCommand implements Command {
                         .setLabel('🔒 Lock')
                 );
 
-                await message?.edit({
-                    content: message.content,
-                    embeds: [message.embeds[0]],
-                    components: message.components,
-                });
+                const { components } = message;
+                await this.client.util.edit(message, { components });
             } catch (error) {
                 console.log(error);
             }
