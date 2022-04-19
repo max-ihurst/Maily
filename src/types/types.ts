@@ -3,6 +3,7 @@ export interface Mail {
     panel: string;
     guild: string;
     user: string;
+    claimer: string;
 }
 
 export interface Guild {

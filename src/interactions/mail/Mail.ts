@@ -49,4 +49,9 @@ export const MailCommand = new SlashCommandBuilder()
                     .setDescription('The user to remove from the mail ticket.')
                     .setRequired(true)
             )
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('claim')
+            .setDescription('Claim a ticket to a single mail ticket accessor.')
     );

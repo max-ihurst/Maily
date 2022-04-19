@@ -20,5 +20,9 @@ export default mongoose.model<Mail>(
             type: String,
             required: true,
         },
+        claimer: {
+            type: String,
+            required: false,
+        },
     })
 );
