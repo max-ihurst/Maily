@@ -54,4 +54,9 @@ export const MailCommand = new SlashCommandBuilder()
         command
             .setName('claim')
             .setDescription('Claim a ticket to a single mail ticket accessor.')
+    )
+    .addSubcommand((command) =>
+        command
+            .setName('unclaim')
+            .setDescription('Unclaim a ticket to restore all the access users.')
     );
