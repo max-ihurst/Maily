@@ -16,7 +16,7 @@ declare module 'discord.js' {
     }
 }
 
-export default class ModMail extends Client {
+export default class Maily extends Client {
     constructor() {
         super({
             intents: [
