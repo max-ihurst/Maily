@@ -51,7 +51,13 @@ export default class MailOpenCommand implements Command {
             try {
                 await guild.members.fetch({ user: interaction.user.id });
             } catch (error) {
-                console.error(error);
+                if (error instanceof DiscordAPIError) {
+                    if (error.httpStatus != 404) {
+                        console.error(error);
+                    }
+                } else {
+                    console.error(error);
+                }
             }
         }
 
