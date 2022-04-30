@@ -175,6 +175,8 @@ export default class MailOpenCommand implements Command {
                         }
                     }
 
+                    await this.client.settings.increment(guild.id, 'mail');
+
                     const channel = await guild.channels.create(
                         interaction.user.username +
                             '-' +
@@ -185,8 +187,6 @@ export default class MailOpenCommand implements Command {
                             permissionOverwrites: permissions,
                         }
                     );
-
-                    await this.client.settings.increment(guild.id, 'mail');
 
                     const embed = new MessageEmbed()
                         .setColor(Constants.EMBED_COLOR)
