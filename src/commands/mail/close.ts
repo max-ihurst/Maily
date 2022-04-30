@@ -6,6 +6,7 @@ import {
     MessageButton,
     Message,
     GuildMember,
+    DiscordAPIError,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -103,12 +104,25 @@ export default class MailCloseCommand implements Command {
                     await MailModel.deleteOne({ id: interaction.channel?.id });
                     await interaction.channel?.delete();
                 } catch (error) {
-                    console.log(error);
+                    if (error instanceof DiscordAPIError) {
+                        if (error.httpStatus == 403) {
+                            await interaction.reply({
+                                content: [
+                                    'I seem to be missing permissions to run this command.',
+                                    'Ensure that I have permissions to `MANAGE_CHANNELS`.',
+                                ].join('\n'),
+                                ephemeral: true,
+                            });
+                        }
+                    } else {
+                        await interaction.editReply({
+                            content:
+                                'There was an unkown error running this command!!',
+                            components: [row],
+                        });
 
-                    await interaction.editReply({
-                        content: 'There was an error closing this ticket!',
-                        components: [row],
-                    });
+                        console.log(error);
+                    }
                 }
 
                 return collector.stop('deleted');

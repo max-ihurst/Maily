@@ -6,6 +6,7 @@ import {
     Permissions,
     GuildMember,
     Snowflake,
+    DiscordAPIError,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -92,11 +93,24 @@ export default class MailUnclaimCommand implements Command {
                 content: `This mail ticket has now been unclaimed.`,
             });
         } catch (error) {
-            console.error(error);
-            await interaction.reply({
-                content: 'There was an error running this command!',
-                ephemeral: true,
-            });
+            if (error instanceof DiscordAPIError) {
+                if (error.httpStatus == 403) {
+                    await interaction.reply({
+                        content: [
+                            'I seem to be missing permissions to run this command.',
+                            'Ensure that I have permissions to `MANAGE_CHANNELS`.',
+                        ].join('\n'),
+                        ephemeral: true,
+                    });
+                }
+            } else {
+                await interaction.reply({
+                    content: 'There was an error running this command!',
+                    ephemeral: true,
+                });
+
+                console.error(error);
+            }
         }
     }
 }

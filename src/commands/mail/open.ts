@@ -9,6 +9,7 @@ import {
     Permissions,
     MessageActionRow,
     MessageButton,
+    DiscordAPIError,
 } from 'discord.js';
 
 import Constants from '../../Constants';
@@ -232,15 +233,27 @@ export default class MailOpenCommand implements Command {
 
                     await interaction.deleteReply();
                 } catch (error) {
-                    await interaction.followUp({
-                        content:
-                            'There was an error creating your mail ticket.',
-                        ephemeral: true,
-                    });
+                    if (error instanceof DiscordAPIError) {
+                        if (error.httpStatus == 403) {
+                            await interaction.followUp({
+                                content: [
+                                    'I seem to be missing permissions to create your mail ticket.',
+                                    'Within this guild I muse require permissions to `MANAGE_CHANNELS`.',
+                                ].join('\n'),
+                                ephemeral: true,
+                            });
+                        }
+                    } else {
+                        await interaction.followUp({
+                            content:
+                                'There was an unkown error running this command!',
+                            ephemeral: true,
+                        });
+
+                        console.error(error);
+                    }
 
                     await interaction.deleteReply();
-
-                    console.error(error);
                 }
 
                 return collector.stop();

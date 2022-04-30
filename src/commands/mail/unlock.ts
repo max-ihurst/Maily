@@ -7,6 +7,7 @@ import {
     MessageButton,
     GuildMember,
     Message,
+    DiscordAPIError,
 } from 'discord.js';
 
 import MailModel from '../../models/Mails';
@@ -83,12 +84,24 @@ export default class MailUnlockCommand implements Command {
                 console.log(error);
             }
         } catch (error) {
-            console.error(error);
+            if (error instanceof DiscordAPIError) {
+                if (error.httpStatus == 403) {
+                    await interaction.reply({
+                        content: [
+                            'I seem to be missing permissions to run this command.',
+                            'Ensure that I have permissions to `MANAGE_CHANNELS`.',
+                        ].join('\n'),
+                        ephemeral: true,
+                    });
+                }
+            } else {
+                await interaction.reply({
+                    content: 'There was an error unlocking this mail ticket!',
+                    ephemeral: true,
+                });
 
-            await interaction.reply({
-                content: 'There was an error unlocking this mail ticket!',
-                ephemeral: true,
-            });
+                console.error(error);
+            }
         }
     }
 }
