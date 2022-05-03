@@ -106,18 +106,18 @@ export default class MailCloseCommand implements Command {
                 } catch (error) {
                     if (error instanceof DiscordAPIError) {
                         if (error.httpStatus == 403) {
-                            await interaction.reply({
+                            await interaction.editReply({
                                 content: [
                                     'I seem to be missing permissions to run this command.',
                                     'Ensure that I have permissions to `MANAGE_CHANNELS`.',
                                 ].join('\n'),
-                                ephemeral: true,
+                                components: [row],
                             });
                         }
                     } else {
                         await interaction.editReply({
                             content:
-                                'There was an unkown error running this command!!',
+                                'There was an unkown error running this command!',
                             components: [row],
                         });
 
