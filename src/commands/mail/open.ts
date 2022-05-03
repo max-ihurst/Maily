@@ -158,6 +158,10 @@ export default class MailOpenCommand implements Command {
                             deny: Permissions.FLAGS.VIEW_CHANNEL,
                             id: guild.id,
                         },
+                        {
+                            allow: Permissions.FLAGS.VIEW_CHANNEL,
+                            id: this.client.user?.id as string,
+                        },
                     ];
 
                     const category = guild.channels.cache.get(
@@ -239,6 +243,7 @@ export default class MailOpenCommand implements Command {
 
                     await interaction.deleteReply();
                 } catch (error) {
+                    console.log(error);
                     if (error instanceof DiscordAPIError) {
                         if (error.httpStatus == 403) {
                             await interaction.followUp({
