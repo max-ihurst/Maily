@@ -101,8 +101,8 @@ export default class MailCloseCommand implements Command {
 
             if (i.customId == 'CONFIRM') {
                 try {
-                    await MailModel.deleteOne({ id: interaction.channel?.id });
                     await interaction.channel?.delete();
+                    await MailModel.deleteOne({ id: interaction.channel?.id });
                 } catch (error) {
                     if (error instanceof DiscordAPIError) {
                         if (error.httpStatus == 403) {
@@ -150,17 +150,19 @@ export default class MailCloseCommand implements Command {
                     components: [row],
                 });
             } else if (reason == 'user') {
-                const msg = (await interaction.channel?.messages.fetch(
-                    doc.panel
-                )) as Message;
+                try {
+                    const msg = (await interaction.channel?.messages.fetch(
+                        doc.panel
+                    )) as Message;
 
-                msg.components[0].components[1].disabled = false;
+                    msg.components[0].components[1].disabled = false;
 
-                msg.edit({
-                    content: msg.content,
-                    embeds: [msg.embeds[0]],
-                    components: msg.components,
-                });
+                    await this.client.util.edit(msg, {
+                        components: msg.components,
+                    });
+
+                    // eslint-disable-next-line no-empty
+                } catch {}
             }
         });
     }

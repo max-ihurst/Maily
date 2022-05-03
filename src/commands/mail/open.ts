@@ -147,38 +147,38 @@ export default class MailOpenCommand implements Command {
 
                 const settings = this.client.settings.cache.get(guild.id);
 
+                const permissions = [
+                    {
+                        allow: Permissions.FLAGS.VIEW_CHANNEL,
+                        id: interaction.user.id,
+                    },
+                    {
+                        deny: Permissions.FLAGS.VIEW_CHANNEL,
+                        id: guild.id,
+                    },
+                    {
+                        allow: Permissions.FLAGS.SEND_MESSAGES,
+                        id: this.client.user?.id as string,
+                    },
+                ];
+
+                const category = guild.channels.cache.get(
+                    settings?.parent as string
+                );
+
+                if (settings?.access) {
+                    const role = guild?.roles.cache.get(settings.access);
+
+                    if (role) {
+                        permissions.push({
+                            allow: Permissions.FLAGS.VIEW_CHANNEL,
+                            id: role.id,
+                        });
+                    }
+                }
+
                 /* Creating the mail ticket channel */
                 try {
-                    const permissions = [
-                        {
-                            allow: Permissions.FLAGS.VIEW_CHANNEL,
-                            id: interaction.user.id,
-                        },
-                        {
-                            deny: Permissions.FLAGS.VIEW_CHANNEL,
-                            id: guild.id,
-                        },
-                        {
-                            allow: Permissions.FLAGS.VIEW_CHANNEL,
-                            id: this.client.user?.id as string,
-                        },
-                    ];
-
-                    const category = guild.channels.cache.get(
-                        settings?.parent as string
-                    );
-
-                    if (settings?.access) {
-                        const role = guild?.roles.cache.get(settings.access);
-
-                        if (role) {
-                            permissions.push({
-                                allow: Permissions.FLAGS.VIEW_CHANNEL,
-                                id: role.id,
-                            });
-                        }
-                    }
-
                     await this.client.settings.increment(guild.id, 'mail');
 
                     const channel = await guild.channels.create(
@@ -191,6 +191,17 @@ export default class MailOpenCommand implements Command {
                             permissionOverwrites: permissions,
                         }
                     );
+
+                    const doc = new MailModel({
+                        id: channel?.id,
+                        guild: guild.id,
+                        user: interaction.user.id,
+                    });
+
+                    await interaction.followUp({
+                        content: `Your mail ticket was created in **${guild.name}**! (<#${channel.id}>)`,
+                        ephemeral: true,
+                    });
 
                     const embed = new MessageEmbed()
                         .setColor(Constants.EMBED_COLOR)
@@ -210,49 +221,60 @@ export default class MailOpenCommand implements Command {
                         embed.addField('Reason', reason.substring(0, 1024));
                     }
 
-                    const msg = await channel?.send({
-                        content: `<@${interaction.user.id}>`,
-                        embeds: [embed],
-                        components: [
-                            new MessageActionRow().addComponents([
-                                new MessageButton()
-                                    .setCustomId('LOCK')
-                                    .setStyle('SECONDARY')
-                                    .setLabel('🔒 Lock'),
-                                new MessageButton()
-                                    .setCustomId('CLOSE')
-                                    .setStyle('SECONDARY')
-                                    .setLabel('❌ Close'),
-                            ]),
-                        ],
-                    });
+                    try {
+                        const message = await channel?.send({
+                            content: `<@${interaction.user.id}>`,
+                            embeds: [embed],
+                            components: [
+                                new MessageActionRow().addComponents([
+                                    new MessageButton()
+                                        .setCustomId('LOCK')
+                                        .setStyle('SECONDARY')
+                                        .setLabel('🔒 Lock'),
+                                    new MessageButton()
+                                        .setCustomId('CLOSE')
+                                        .setStyle('SECONDARY')
+                                        .setLabel('❌ Close'),
+                                ]),
+                            ],
+                        });
 
-                    const doc = new MailModel({
-                        id: channel?.id,
-                        panel: msg.id,
-                        guild: guild.id,
-                        user: interaction.user.id,
-                    });
+                        doc.panel = message.id;
+
+                        // eslint-disable-next-line no-empty
+                    } catch {}
 
                     await doc.save();
 
-                    await interaction.followUp({
-                        content: `Your mail ticket was created in **${guild.name}**! (<#${channel.id}>)`,
-                        ephemeral: true,
-                    });
-
                     await interaction.deleteReply();
                 } catch (error) {
-                    console.log(error);
                     if (error instanceof DiscordAPIError) {
+                        const flag = new Permissions([
+                            Permissions.FLAGS.SEND_MESSAGES,
+                            Permissions.FLAGS.MANAGE_CHANNELS,
+                            Permissions.FLAGS.MANAGE_ROLES,
+                        ]);
+
                         if (error.httpStatus == 403) {
-                            await interaction.followUp({
-                                content: [
-                                    'I seem to be missing permissions to create your mail ticket.',
-                                    'Within this guild I muse require permissions to `MANAGE_CHANNELS`.',
-                                ].join('\n'),
-                                ephemeral: true,
-                            });
+                            const missing = guild.me?.permissions.missing(flag);
+
+                            if (missing?.length) {
+                                await interaction.followUp({
+                                    content: [
+                                        'I seem to be missing permissions to create your mail ticket.',
+                                        `I muse require permissions ${missing
+                                            ?.map((p) => `\`${p}\``)
+                                            .join(', ')}.`,
+                                    ].join('\n'),
+                                    ephemeral: true,
+                                });
+                            } else {
+                                await interaction.followUp({
+                                    content:
+                                        'I seem to be having an issue with hierarchical permissions.',
+                                    ephemeral: true,
+                                });
+                            }
                         }
                     } else {
                         await interaction.followUp({
@@ -270,7 +292,7 @@ export default class MailOpenCommand implements Command {
                 return collector.stop();
             }
 
-            /* Managing star pages */
+            /* Managing embed pages */
             if (r.emoji.name == '▶️' && num < pages.length - 1) {
                 num += 1;
             } else if (r.emoji.name == '◀️' && num > 0) {

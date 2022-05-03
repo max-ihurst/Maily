@@ -60,9 +60,7 @@ export default class MailUnlockCommand implements Command {
                 [Permissions.FLAGS.VIEW_CHANNEL.toString()]: true,
             });
 
-            if (!interaction.deferred) {
-                await interaction.reply('Successfully locked the mail ticket.');
-            }
+            await interaction.reply('Successfully locked the mail ticket.');
 
             try {
                 const message = (await interaction.channel?.messages.fetch(
@@ -86,13 +84,25 @@ export default class MailUnlockCommand implements Command {
         } catch (error) {
             if (error instanceof DiscordAPIError) {
                 if (error.httpStatus == 403) {
-                    await interaction.reply({
-                        content: [
-                            'I seem to be missing permissions to run this command.',
-                            'Ensure that I have permissions to `MANAGE_CHANNELS`.',
-                        ].join('\n'),
-                        ephemeral: true,
-                    });
+                    if (
+                        !interaction.guild?.me?.permissions.has(
+                            'MANAGE_CHANNELS'
+                        )
+                    ) {
+                        await interaction.reply({
+                            content: [
+                                'I seem to be missing permissions to run this command.',
+                                'Ensure that I have permissions to `MANAGE_CHANNELS`.',
+                            ].join('\n'),
+                            ephemeral: true,
+                        });
+                    } else {
+                        await interaction.reply({
+                            content:
+                                'I seem to be having an issue with hierarchical permissions.',
+                            ephemeral: true,
+                        });
+                    }
                 }
             } else {
                 await interaction.reply({

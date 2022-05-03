@@ -66,13 +66,25 @@ export default class MailRemoveCommand implements Command {
         } catch (error) {
             if (error instanceof DiscordAPIError) {
                 if (error.httpStatus == 403) {
-                    await interaction.reply({
-                        content: [
-                            'I seem to be missing permissions to run this command.',
-                            'Ensure that I have permissions to `MANAGE_CHANNELS`.',
-                        ].join('\n'),
-                        ephemeral: true,
-                    });
+                    if (
+                        !interaction.guild?.me?.permissions.has(
+                            'MANAGE_CHANNELS'
+                        )
+                    ) {
+                        await interaction.reply({
+                            content: [
+                                'I seem to be missing permissions to run this command.',
+                                'Ensure that I have permissions to `MANAGE_CHANNELS`.',
+                            ].join('\n'),
+                            ephemeral: true,
+                        });
+                    } else {
+                        await interaction.reply({
+                            content:
+                                'I seem to be having an issue with hierarchical permissions.',
+                            ephemeral: true,
+                        });
+                    }
                 }
             } else {
                 await interaction.reply({

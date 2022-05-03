@@ -10,7 +10,7 @@ export default mongoose.model<Mail>(
         },
         panel: {
             type: String,
-            required: true,
+            required: false,
         },
         guild: {
             type: String,
