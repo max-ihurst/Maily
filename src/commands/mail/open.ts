@@ -249,22 +249,17 @@ export default class MailOpenCommand implements Command {
                     await interaction.deleteReply();
                 } catch (error) {
                     if (error instanceof DiscordAPIError) {
-                        const flag = new Permissions([
-                            Permissions.FLAGS.SEND_MESSAGES,
-                            Permissions.FLAGS.MANAGE_CHANNELS,
-                            Permissions.FLAGS.MANAGE_ROLES,
-                        ]);
-
                         if (error.httpStatus == 403) {
-                            const missing = guild.me?.permissions.missing(flag);
-
-                            if (missing?.length) {
+                            if (
+                                !guild.me?.permissions.has([
+                                    Permissions.FLAGS.MANAGE_CHANNELS,
+                                    Permissions.FLAGS.SEND_MESSAGES,
+                                ])
+                            ) {
                                 await interaction.followUp({
                                     content: [
                                         'I seem to be missing permissions to create your mail ticket.',
-                                        `I muse require permissions ${missing
-                                            ?.map((p) => `\`${p}\``)
-                                            .join(', ')}.`,
+                                        'I muse require permissions `MANAGE_CHANNELS` and `SEND_MESSAGES`',
                                     ].join('\n'),
                                     ephemeral: true,
                                 });
@@ -275,15 +270,15 @@ export default class MailOpenCommand implements Command {
                                     ephemeral: true,
                                 });
                             }
-                        }
-                    } else {
-                        await interaction.followUp({
-                            content:
-                                'There was an unkown error running this command!',
-                            ephemeral: true,
-                        });
+                        } else {
+                            await interaction.followUp({
+                                content:
+                                    'There was an unkown error running this command!',
+                                ephemeral: true,
+                            });
 
-                        console.error(error);
+                            console.error(error);
+                        }
                     }
 
                     await interaction.deleteReply();
