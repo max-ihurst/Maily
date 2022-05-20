@@ -235,6 +235,10 @@ export default class MailOpenCommand implements Command {
                                         .setCustomId('CLOSE')
                                         .setStyle('SECONDARY')
                                         .setLabel('❌ Close'),
+                                    new MessageButton()
+                                        .setCustomId('TRANSCRIPT')
+                                        .setStyle('SECONDARY')
+                                        .setLabel('📄 Transcript'),
                                 ]),
                             ],
                         });
