@@ -18,6 +18,11 @@ export const MailCommand = new SlashCommandBuilder()
     )
     .addSubcommand((command) =>
         command
+            .setName('transcript')
+            .setDescription('Send to create a transcript of the mail ticket.')
+    )
+    .addSubcommand((command) =>
+        command
             .setName('lock')
             .setDescription(
                 'Locks the ticket mail from the creator and other accessed users.'
