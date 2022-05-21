@@ -16,6 +16,7 @@ import Command from '../../Command';
 export default class MailUnclaimCommand implements Command {
     public client: Client;
     public name = 'unclaim';
+    public cooldown = 3;
 
     public constructor(client: Client) {
         this.client = client;
@@ -25,6 +26,7 @@ export default class MailUnclaimCommand implements Command {
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
         const doc = await MailModel.findOne({ id: interaction.channel?.id });
+        const cooldown = this.client.util.cooldown(this, interaction.user);
         const settings = this.client.settings.cache.get(
             interaction.guild?.id as string
         ) as Guild;
@@ -53,6 +55,11 @@ export default class MailUnclaimCommand implements Command {
         } else if (!doc.claimer) {
             return await interaction.reply({
                 content: 'This ticket was never claimed to begin with.',
+                ephemeral: true,
+            });
+        } else if (cooldown) {
+            return await interaction.reply({
+                content: `You're on cooldown wait \`${cooldown}\`s before reusing this command.`,
                 ephemeral: true,
             });
         }

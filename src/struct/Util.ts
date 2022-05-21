@@ -1,16 +1,23 @@
 import {
+    Client,
+    Collection,
     GuildMember,
     Message,
     MessageEditOptions,
     PermissionResolvable,
+    User,
 } from 'discord.js';
 
 import { Guild } from '../types/types';
+import Command from '../Command';
 import Constants from '../Constants';
 
 export default class Utilities {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    public constructor() {}
+    public client: Client;
+
+    public constructor(client: Client) {
+        this.client = client;
+    }
 
     public hasAccess(settings: Guild, member: GuildMember): number {
         if (
@@ -26,6 +33,32 @@ export default class Utilities {
         }
 
         return 0;
+    }
+
+    public cooldown(command: Command, user: User): number | null {
+        const now = Date.now();
+        let timestamps = this.client.cooldowns.get(command.name);
+
+        if (!timestamps) {
+            this.client.cooldowns.set(command.name, new Collection());
+            timestamps = this.client.cooldowns.get(command.name);
+        }
+
+        const cooldown = (command.cooldown || 0) * 1000;
+
+        if (timestamps?.has(user.id)) {
+            const expiration = (timestamps.get(user.id) as number) + cooldown;
+
+            if (now < expiration) {
+                const time = (expiration - now) / 1000;
+                return time;
+            }
+        } else {
+            timestamps?.set(user.id, now);
+            setTimeout(() => timestamps?.delete(user.id), cooldown);
+        }
+
+        return null;
     }
 
     public async edit(

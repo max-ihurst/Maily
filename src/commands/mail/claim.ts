@@ -15,6 +15,7 @@ import Command from '../../Command';
 export default class MailClaimCommand implements Command {
     public client: Client;
     public name = 'claim';
+    public cooldown = 3;
 
     public constructor(client: Client) {
         this.client = client;
@@ -24,6 +25,7 @@ export default class MailClaimCommand implements Command {
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
         const doc = await MailModel.findOne({ id: interaction.channel?.id });
+        const cooldown = this.client.util.cooldown(this, interaction.user);
         const settings = this.client.settings.cache.get(
             interaction.guild?.id as string
         ) as Guild;
@@ -47,6 +49,11 @@ export default class MailClaimCommand implements Command {
             return await interaction.reply({
                 content:
                     'You must have either the mail access role or `MANAGE_GUILD` permissions.',
+                ephemeral: true,
+            });
+        } else if (cooldown) {
+            return await interaction.reply({
+                content: `You're on cooldown wait \`${cooldown}\`s before reusing this command.`,
                 ephemeral: true,
             });
         } else if (doc.claimer) {

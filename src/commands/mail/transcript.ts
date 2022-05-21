@@ -20,6 +20,7 @@ const document = dom.window.document;
 export default class MailTranscriptCommand implements Command {
     public client: Client;
     public name = 'transcript';
+    public cooldown = 10;
 
     public constructor(client: Client) {
         this.client = client;
@@ -29,6 +30,7 @@ export default class MailTranscriptCommand implements Command {
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
         const doc = await MailModel.findOne({ id: interaction.channel?.id });
+        const cooldown = this.client.util.cooldown(this, interaction.user);
 
         if (!doc) {
             return await interaction.reply({
@@ -71,6 +73,11 @@ export default class MailTranscriptCommand implements Command {
                     'top.gg',
                     '<https://top.gg/bot/961730965254860820>'
                 )} to gain access to this command.`,
+                ephemeral: true,
+            });
+        } else if (cooldown) {
+            return await interaction.reply({
+                content: `You're on cooldown wait \`${cooldown}\`s before reusing this command.`,
                 ephemeral: true,
             });
         }

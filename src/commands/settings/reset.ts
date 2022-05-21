@@ -5,6 +5,7 @@ import Command from '../../Command';
 export default class SettingsResetCommand implements Command {
     public client: Client;
     public name = 'reset';
+    public cooldown = 10;
 
     public constructor(client: Client) {
         this.client = client;
@@ -14,6 +15,7 @@ export default class SettingsResetCommand implements Command {
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
         const setting = interaction.options.getString('setting') as Settings;
+        const cooldown = this.client.util.cooldown(this, interaction.user);
 
         if (interaction.channel?.type == 'DM') {
             return await interaction.reply({
@@ -26,6 +28,11 @@ export default class SettingsResetCommand implements Command {
             return await interaction.reply({
                 content:
                     'You need to have `MANAGE_GUILD` permissions to run this command.',
+                ephemeral: true,
+            });
+        } else if (cooldown) {
+            return await interaction.reply({
+                content: `You're on cooldown wait \`${cooldown}\`s before reusing this command.`,
                 ephemeral: true,
             });
         }

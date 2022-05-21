@@ -1,4 +1,4 @@
-import { Client, Intents } from 'discord.js';
+import { Client, Collection, Intents } from 'discord.js';
 import CommandHandler from '../handlers/Command';
 import EventHandler from '../handlers/Event';
 import SettingsManager from './managers/Settings';
@@ -12,6 +12,7 @@ declare module 'discord.js' {
         events: EventHandler;
         settings: SettingsManager;
         util: Utilities;
+        cooldowns: Collection<string, Collection<string, number>>;
         _cachedMails: Set<string>;
     }
 }
@@ -33,9 +34,10 @@ export default class Maily extends Client {
         this.commands = new CommandHandler(this);
         this.events = new EventHandler(this);
         this.settings = new SettingsManager();
-        this.util = new Utilities();
+        this.util = new Utilities(this);
 
         this._cachedMails = new Set();
+        this.cooldowns = new Collection();
 
         this.once('ready', () => console.log('Yoo this is ready!'));
 

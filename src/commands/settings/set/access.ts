@@ -4,6 +4,7 @@ import Command from '../../../Command';
 export default class SettingsAccessCommand implements Command {
     public client: Client;
     public name = 'access-role';
+    public cooldown = 10;
 
     public constructor(client: Client) {
         this.client = client;
@@ -13,6 +14,7 @@ export default class SettingsAccessCommand implements Command {
         interaction: CommandInteraction<CacheType>
     ): Promise<void> {
         const role = interaction.options.getRole('role');
+        const cooldown = this.client.util.cooldown(this, interaction.user);
 
         if (interaction.channel?.type == 'DM') {
             return await interaction.reply({
@@ -25,6 +27,11 @@ export default class SettingsAccessCommand implements Command {
             return await interaction.reply({
                 content:
                     'You need to have `MANAGE_GUILD` permissions to run this command.',
+                ephemeral: true,
+            });
+        } else if (cooldown) {
+            return await interaction.reply({
+                content: `You're on cooldown wait \`${cooldown}\`s before reusing this command.`,
                 ephemeral: true,
             });
         }
