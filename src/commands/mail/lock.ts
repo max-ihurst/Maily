@@ -29,7 +29,6 @@ export default class MailLockCommand implements Command {
     ): Promise<void> {
         const doc = await MailModel.findOne({ id: interaction.channel?.id });
         const cooldown = this.client.util.cooldown(this, interaction.user);
-        console.log(cooldown);
         const settings = this.client.settings.cache.get(
             interaction.guild?.id as string
         ) as Guild;
