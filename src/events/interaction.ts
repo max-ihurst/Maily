@@ -23,13 +23,8 @@ export default class InteractionEvent implements Event {
 
         if (!doc) return;
 
-        const command = this.client.commands.modules.get(
-            interaction.customId.toLowerCase()
-        );
-
-        if (['LOCK', 'UNLOCK'].includes(interaction.customId)) {
-            await interaction.deferUpdate();
-        }
+        const id = interaction.customId.toLowerCase();
+        const command = this.client.commands.modules.get(id);
 
         command?.execute(interaction);
     }

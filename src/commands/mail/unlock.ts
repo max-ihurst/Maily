@@ -60,7 +60,7 @@ export default class MailUnlockCommand implements Command {
                 [Permissions.FLAGS.VIEW_CHANNEL.toString()]: true,
             });
 
-            await interaction.reply('Successfully locked the mail ticket.');
+            await interaction.reply('Successfully unlocked the mail ticket.');
 
             try {
                 const message = (await interaction.channel?.messages.fetch(
