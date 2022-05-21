@@ -18,9 +18,7 @@ export const SettingsCommand = new SlashCommandBuilder()
     .addSubcommand((command) =>
         command
             .setName('category')
-            .setDescription(
-                'Set the category in which mail tickets are created into.'
-            )
+            .setDescription('Set the category in which mail tickets are created into.')
             .addChannelOption((option) =>
                 option
                     .setName('category')
@@ -32,9 +30,7 @@ export const SettingsCommand = new SlashCommandBuilder()
     .addSubcommand((command) =>
         command
             .setName('message')
-            .setDescription(
-                'The introducing message send to a mail ticket when created (use {user} to mention the user directly)'
-            )
+            .setDescription('The introducing message send to a mail ticket when created (use {user} to mention the user directly)')
             .addStringOption((option) =>
                 option
                     .setName('message')

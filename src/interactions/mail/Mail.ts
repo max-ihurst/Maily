@@ -14,7 +14,9 @@ export const MailCommand = new SlashCommandBuilder()
             )
     )
     .addSubcommand((command) =>
-        command.setName('close').setDescription('Send to close a mail ticket.')
+        command
+            .setName('close')
+            .setDescription('Send to close a mail ticket.')
     )
     .addSubcommand((command) =>
         command
@@ -24,12 +26,12 @@ export const MailCommand = new SlashCommandBuilder()
     .addSubcommand((command) =>
         command
             .setName('lock')
-            .setDescription(
-                'Locks the ticket mail from the creator and other accessed users.'
-            )
+            .setDescription('Locks the ticket mail from the creator and other accessed users.')
     )
     .addSubcommand((command) =>
-        command.setName('unlock').setDescription('Unlocks the mail ticket!')
+        command
+            .setName('unlock')
+            .setDescription('Unlocks the mail ticket!')
     )
     .addSubcommand((command) =>
         command
@@ -45,9 +47,7 @@ export const MailCommand = new SlashCommandBuilder()
     .addSubcommand((command) =>
         command
             .setName('remove')
-            .setDescription(
-                'Remove a user from interacting within the mail ticket.'
-            )
+            .setDescription('Remove a user from interacting within the mail ticket.')
             .addUserOption((option) =>
                 option
                     .setName('user')
